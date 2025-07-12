@@ -81,8 +81,8 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool orbit, bool
     // make sure that when pitch is out of bounds, screen doesn't get flipped
     if (constrainPitch)
     {
-        Theta = std::clamp(Theta, 1.0f, 179.0f);
-        Pitch = std::clamp(Pitch, -89.0f, 89.0f);
+        Theta = glm::clamp(Theta, 1.0f, 179.0f);
+        Pitch = glm::clamp(Pitch, -89.0f, 89.0f);
     }
 
     // update Forward, Right and Up Vectors using the updated Euler angles
@@ -94,7 +94,7 @@ void Camera::ProcessMouseScroll(float yoffset, bool orbit)
     if (orbit)
     {
         TargetDistance += yoffset * 0.2f;
-        TargetDistance = std::clamp(TargetDistance, 0.5f, 100.0f);
+        TargetDistance = glm::clamp(TargetDistance, 0.5f, 100.0f);
     }
     else
     {
