@@ -1,6 +1,4 @@
 #include "camera.h"
-#include <iostream>
-#include <functional>
 
 Camera::Camera(glm::vec3 position, float yaw, float pitch)
                : Position(position), Yaw(yaw), Pitch(pitch),

@@ -1,0 +1,104 @@
+[
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/camera.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/camera.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/camera.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/camera.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/drawable_mesh.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/drawable_mesh.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/drawable_mesh.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/drawable_mesh.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/drawable_model.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/drawable_model.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/drawable_model.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/drawable_model.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/frame_counter.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/frame_counter.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/frame_counter.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/frame_counter.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/cc  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include  -o CMakeFiles/opengl-model-viewer.dir/src/glad.c.o -c /home/caldecrack/Ramos/Shader-Compositor/src/glad.c",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/glad.c",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/primitives.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/primitives.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/primitives.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/primitives.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/property_inspector.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/property_inspector.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/property_inspector.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/property_inspector.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/shader.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/shader.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/shader.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/shader.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/src/window.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/src/window.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/src/window.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/src/window.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_demo.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_demo.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_demo.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_demo.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_draw.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_draw.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_draw.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_draw.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_impl_glfw.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_impl_glfw.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_impl_glfw.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_impl_glfw.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_impl_opengl3.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_impl_opengl3.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_impl_opengl3.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_impl_opengl3.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_tables.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_tables.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_tables.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_tables.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_widgets.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_widgets.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/dependencies/include/imgui/imgui_widgets.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/dependencies/include/imgui/imgui_widgets.cpp.o"
+},
+{
+  "directory": "/home/caldecrack/Ramos/Shader-Compositor/build",
+  "command": "/usr/bin/c++  -I/home/caldecrack/Ramos/Shader-Compositor/dependencies/include -std=gnu++17 -o CMakeFiles/opengl-model-viewer.dir/main.cpp.o -c /home/caldecrack/Ramos/Shader-Compositor/main.cpp",
+  "file": "/home/caldecrack/Ramos/Shader-Compositor/main.cpp",
+  "output": "CMakeFiles/opengl-model-viewer.dir/main.cpp.o"
+}
+]

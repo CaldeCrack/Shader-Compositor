@@ -1,3 +1,3 @@
-C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/build/CMakeFiles/opengl-model-viewer.dir
-C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/build/CMakeFiles/edit_cache.dir
-C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/build/CMakeFiles/rebuild_cache.dir
+/home/caldecrack/Ramos/Shader-Compositor/build/CMakeFiles/opengl-model-viewer.dir
+/home/caldecrack/Ramos/Shader-Compositor/build/CMakeFiles/edit_cache.dir
+/home/caldecrack/Ramos/Shader-Compositor/build/CMakeFiles/rebuild_cache.dir

@@ -20,8 +20,11 @@ include_directories(dependencies/include)
 
 add_executable(opengl-model-viewer ${SOURCE_FILES} ${IMGUI_SOURCE_FILES} ${IMGUI_HEADERS} main.cpp)
 
-if(APPLE)
-    target_link_libraries(opengl-model-viewer ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library/libglfw.3.3.dylib)
+if (APPLE)
+    target_link_libraries(opengl-model-viewer ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library/libglfw.4.3.dylib)
+elseif (UNIX)
+    target_link_directories(opengl-model-viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/library)
+    target_link_libraries(opengl-model-viewer PRIVATE glfw3)
 else ()
     target_link_libraries(opengl-model-viewer ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/glfw3.dll)
 endif ()
