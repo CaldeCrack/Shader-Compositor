@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"/home/caldecrack/Ramos/Shader-Compositor/build/cmake_install.cmake"
+		"C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }
