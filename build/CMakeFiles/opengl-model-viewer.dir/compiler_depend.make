@@ -3372,8 +3372,10 @@ CMakeFiles/opengl-model-viewer.dir/src/primitives.cpp.obj: C:/Users/ninja/Deskto
   C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/primitives.h
 
 CMakeFiles/opengl-model-viewer.dir/src/property_inspector.cpp.obj: C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/property_inspector.cpp \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/algorithm \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/backward/binders.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bit \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/algorithmfwd.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/alloc_traits.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/allocator.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/basic_ios.h \
@@ -3418,20 +3420,24 @@ CMakeFiles/opengl-model-viewer.dir/src/property_inspector.cpp.obj: C:/Users/ninj
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/requires_hosted.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/specfun.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/std_abs.h \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_algo.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_algobase.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_bvector.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_construct.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_function.h \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_heap.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_iterator.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_iterator_base_funcs.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_iterator_base_types.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_pair.h \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_tempbuf.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_uninitialized.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_vector.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/streambuf.tcc \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/streambuf_iterator.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/string_view.tcc \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stringfwd.h \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/uniform_int_dist.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/uses_allocator.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/uses_allocator_args.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/utility.h \
@@ -3469,6 +3475,8 @@ CMakeFiles/opengl-model-viewer.dir/src/property_inspector.cpp.obj: C:/Users/ninj
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/math.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/new \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/ostream \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/pstl/execution_defs.h \
+  C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/pstl/glue_algorithm_defs.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/pstl/pstl_config.h \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/stdexcept \
   C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/stdlib.h \
@@ -4838,6 +4846,8 @@ C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POS
 
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/lib/gcc/x86_64-w64-mingw32/15.1.0/include/rtmintrin.h:
 
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/pstl/glue_algorithm_defs.h:
+
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/lib/gcc/x86_64-w64-mingw32/15.1.0/include/serializeintrin.h:
 
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/x86_64-w64-mingw32/include/heapapi.h:
@@ -4975,6 +4985,8 @@ C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POS
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/x86_64-w64-mingw32/include/corecrt_wctype.h:
 
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/x86_64-w64-mingw32/include/jobapi.h:
+
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/uniform_int_dist.h:
 
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/x86_64-w64-mingw32/include/wnnc.h:
 
@@ -5314,6 +5326,8 @@ C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POS
 
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/localefwd.h:
 
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_tempbuf.h:
+
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/ostream.h:
 
 C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/ostream.tcc:
@@ -5520,6 +5534,8 @@ C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/frame_counter.h:
 
 C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/property_inspector.h:
 
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/algorithmfwd.h:
+
 C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/camera.cpp:
 
 C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/drawable_mesh.cpp:
@@ -5531,6 +5547,14 @@ C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/glad.c:
 C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/primitives.h:
 
 C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/property_inspector.cpp:
+
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/algorithm:
+
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_algo.h:
+
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/bits/stl_heap.h:
+
+C:/Users/ninja/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/include/c++/15.1.0/pstl/execution_defs.h:
 
 C:/Users/ninja/Desktop/Proyectos/Shader-Compositor/src/shader.cpp:
 

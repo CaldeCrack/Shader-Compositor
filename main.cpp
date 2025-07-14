@@ -30,6 +30,74 @@ const float reticleSizeMax = 0.01f;
 float reticleSizeTarget = reticleSizeMax;
 float reticleSize;
 
+GLuint fbo1, fbo2;
+GLuint tex1, tex2;
+GLuint depthTex1, depthTex2;
+
+struct ScreenQuad {
+    GLuint VAO, VBO;
+
+    void init() {
+        float quadVertices[] = {
+            // positions   // texCoords
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+
+            -1.0f,  1.0f,  0.0f, 1.0f,
+             1.0f, -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f
+        };
+
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+
+        glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0); // position
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1); // texCoords
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+        glBindVertexArray(0);
+    }
+
+    void draw() {
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
+};
+
+void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& depthTexture, int width, int height) {
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+    glGenTextures(1, &depthTexture);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cerr << "Framebuffer not complete!" << std::endl;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 int main() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -42,13 +110,10 @@ int main() {
 
   Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
   Shader flatShader("shaders/tex.vert", "shaders/tex_flat.frag");
-  Shader blinnShader("shaders/tex.vert", "shaders/tex_blinn.frag");
-  Shader texShader("shaders/tex.vert", "shaders/tex.frag");
-  Shader gradShader("shaders/tex.vert", "shaders/tex_grad.frag");
-  Shader ditherShader("shaders/tex.vert", "shaders/tex_dither.frag");
+  Shader defaultShader("shaders/default.vert", "shaders/default.frag");
+  Shader grayShader("shaders/gray.vert", "shaders/gray.frag");
 
-  std::vector<Shader *> shaders = {&flatShader, &blinnShader, &texShader,
-                                   &gradShader, &ditherShader};
+  std::vector<Shader *> shaders = {&flatShader, &defaultShader, &grayShader};
 
   objl::Loader loader;
   loader.LoadFile("resources/ball.obj");
@@ -77,7 +142,13 @@ int main() {
 
   glEnable(GL_DEPTH_TEST);
 
+  createFramebuffer(fbo1, tex1, depthTex1, windowObj.SCR_WIDTH, windowObj.SCR_HEIGHT);
+  createFramebuffer(fbo2, tex2, depthTex2, windowObj.SCR_WIDTH, windowObj.SCR_HEIGHT);
+
   PropertyInspector propertyInspector;
+
+  ScreenQuad screenQuad;
+  screenQuad.init();
 
   while (!glfwWindowShouldClose(windowObj.window)) {
     ImGui_ImplOpenGL3_NewFrame();
@@ -118,15 +189,61 @@ int main() {
     glm::mat4 projection = glm::perspective(
         glm::radians(camera.Zoom), windowObj.getAspectRatio(), 0.1f, 1000.0f);
 
-    Shader curShader = *shaders[propertyInspector.s_current];
-    curShader.use();
-    gradShader.setFloat("time", glfwGetTime());
-    curShader.setMat4("model", model);
-    curShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
-    curShader.setMat4("projection", projection);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Use first shader
+    Shader* firstShader = shaders[0];
+    firstShader->use();
+    firstShader->setFloat("time", glfwGetTime());
+    firstShader->setMat4("model", model);
+    firstShader->setMat4("view", camera.GetViewMatrix(!fpsMode));
+    firstShader->setMat4("projection", projection);
     const glm::vec3 camPos = fpsMode ? camera.Position : camera.OrbitPosition;
-    curShader.setVec3("camPos", camPos);
+    firstShader->setVec3("camPos", camPos);
+
     models[propertyInspector.m_current]->Draw();
+
+    GLuint currentReadFBO = fbo1;
+    GLuint currentReadTex = tex1;
+    GLuint currentDepthTex = depthTex1;
+    GLuint currentWriteFBO = fbo2;
+    GLuint currentWriteTex = tex2;
+    GLuint currentWriteDepthTex = depthTex2;
+
+    for (size_t i = 0; i < propertyInspector.selected_shaders.size(); ++i) {
+        glBindFramebuffer(GL_FRAMEBUFFER, currentWriteFBO);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        Shader* postShader = shaders[propertyInspector.selected_shaders[i]];
+        postShader->use();
+        postShader->setInt("ourTexture", 0);
+        postShader->setFloat("time", glfwGetTime());
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, currentReadTex);
+
+        screenQuad.draw();
+
+        // Ping-pong buffers
+        std::swap(currentReadFBO, currentWriteFBO);
+        std::swap(currentReadTex, currentWriteTex);
+        std::swap(currentDepthTex, currentWriteDepthTex);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    Shader* finalShader = shaders[1];
+    if (!propertyInspector.selected_shaders.empty()) {
+        finalShader = shaders[propertyInspector.selected_shaders.back()];
+    }
+
+    finalShader->use();
+    finalShader->setInt("ourTexture", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, currentReadTex);
+    screenQuad.draw();
 
     basicShader.use();
     basicShader.setMat4("view", camera.GetViewMatrix(!fpsMode));

@@ -9,6 +9,8 @@
 #include "imgui/imgui.h"
 #include "drawable_model.h"
 
+#include <algorithm>
+
 void PropertyInspector::render(Window windowObj, Camera& camera,
                                std::vector<DrawableModel*> &models) {
 
@@ -110,10 +112,48 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }
-    if (ImGui::Combo("Shader", &s_current,
-                     "Flat\0Blinn-Phong\0Toon\0Gradient\0Screen Door\0"))
-    {
+    if (ImGui::CollapsingHeader("Shader Pipeline", ImGuiTreeNodeFlags_DefaultOpen)) {
+		static const char* shader_names[] = {"Flat", "Default", "Gray"};
+		static bool selected[3] = {false};
+		if (selected_shaders.empty()) {
+			selected_shaders.push_back(0);
+		}
+		if (selected_shaders.size() < 2) {
+			selected_shaders.push_back(1);
+		}
 
-    }
+		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
+			bool was_selected = selected[i];
+			bool is_last_selected = (selected_shaders.size() == 1) && selected[i];
+
+			// Disable unchecking the last selected shader
+			if (is_last_selected) {
+				ImGui::BeginDisabled();
+			}
+
+			if (ImGui::Selectable(shader_names[i], selected[i])) {
+				selected[i] = !was_selected;
+				if (selected[i]) {
+					selected_shaders.push_back(i);
+				} else {
+					auto it = std::find(selected_shaders.begin(), selected_shaders.end(), i);
+					if (it != selected_shaders.end())
+						selected_shaders.erase(it);
+				}
+			}
+
+			if (is_last_selected) {
+				ImGui::EndDisabled();
+			}
+		}
+
+		if (!selected_shaders.empty()) {
+			ImGui::SeparatorText("Shader Order:");
+			for (int i = 0; i < selected_shaders.size(); ++i) {
+				const char* name = shader_names[selected_shaders[i]];
+				ImGui::Text("%d: %s", i, name);
+			}
+		}
+	}
     ImGui::End();
 }

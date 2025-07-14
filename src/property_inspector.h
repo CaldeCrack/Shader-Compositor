@@ -9,6 +9,7 @@
 #include "imgui/imgui.h"
 #include "camera.h"
 #include "drawable_model.h"
+#include <vector>
 
 struct PropertyInspector {
 
@@ -23,7 +24,7 @@ struct PropertyInspector {
     bool turntable = false;
 
     int m_current = 0;
-    int s_current = 0;
+    std::vector<int> selected_shaders;
 
     void render(Window windowObj, Camera &camera, std::vector<DrawableModel*> &models);
 };
