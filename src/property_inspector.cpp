@@ -108,28 +108,16 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     }
     if (ImGui::Combo("Model", &m_current,
-                     "Kind\0Oshi\0House\0Tea\0Cube\0Plane\0"))
+                     "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }
     if (ImGui::CollapsingHeader("Shader Pipeline", ImGuiTreeNodeFlags_DefaultOpen)) {
-		static const char* shader_names[] = {"Flat", "Default", "Gray"};
-		static bool selected[3] = {false};
-		if (selected_shaders.empty()) {
-			selected_shaders.push_back(0);
-		}
-		if (selected_shaders.size() < 2) {
-			selected_shaders.push_back(1);
-		}
+		static const char* shader_names[] = {"Gray", "Invert"};
+		static bool selected[2] = {false};
 
 		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
 			bool was_selected = selected[i];
-			bool is_last_selected = (selected_shaders.size() == 1) && selected[i];
-
-			// Disable unchecking the last selected shader
-			if (is_last_selected) {
-				ImGui::BeginDisabled();
-			}
 
 			if (ImGui::Selectable(shader_names[i], selected[i])) {
 				selected[i] = !was_selected;
@@ -140,10 +128,6 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 					if (it != selected_shaders.end())
 						selected_shaders.erase(it);
 				}
-			}
-
-			if (is_last_selected) {
-				ImGui::EndDisabled();
 			}
 		}
 

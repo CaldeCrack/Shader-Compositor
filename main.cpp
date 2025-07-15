@@ -24,7 +24,7 @@ Window windowObj(1024, 768, framebuffer_size_callback, mouse_callback,
                  scroll_callback, toggleCursor);
 Camera camera;
 FrameCounter frameCounter;
-bool fpsMode;
+bool fpsMode = false;
 
 const float reticleSizeMax = 0.01f;
 float reticleSizeTarget = reticleSizeMax;
@@ -34,37 +34,32 @@ GLuint fbo1, fbo2;
 GLuint tex1, tex2;
 GLuint depthTex1, depthTex2;
 
+int SCR_WIDTH = 1024, SCR_HEIGHT = 768;
+
 struct ScreenQuad {
     GLuint VAO, VBO;
-
     void init() {
         float quadVertices[] = {
             // positions   // texCoords
-            -1.0f,  1.0f,  0.0f, 1.0f,
-            -1.0f, -1.0f,  0.0f, 0.0f,
-             1.0f, -1.0f,  1.0f, 0.0f,
-
-            -1.0f,  1.0f,  0.0f, 1.0f,
-             1.0f, -1.0f,  1.0f, 0.0f,
-             1.0f,  1.0f,  1.0f, 1.0f
+            -1.0f,  1.0f,   0.0f, 1.0f,
+            -1.0f, -1.0f,   0.0f, 0.0f,
+             1.0f, -1.0f,   1.0f, 0.0f,
+            -1.0f,  1.0f,   0.0f, 1.0f,
+             1.0f, -1.0f,   1.0f, 0.0f,
+             1.0f,  1.0f,   1.0f, 1.0f
         };
-
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
-
         glBindVertexArray(VAO);
-
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0); // position
+        glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1); // texCoords
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                              (void*)(2 * sizeof(float)));
         glBindVertexArray(0);
     }
-
     void draw() {
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -76,21 +71,28 @@ void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& depthTexture, int w
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
+    // color texture
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height,
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                           GL_TEXTURE_2D, texture, 0);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-
+    // depth texture
     glGenTextures(1, &depthTexture);
     glBindTexture(GL_TEXTURE_2D, depthTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height,
+                 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                           GL_TEXTURE_2D, depthTexture, 0);
+
+    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, drawBuffers);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cerr << "Framebuffer not complete!" << std::endl;
@@ -98,178 +100,150 @@ void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& depthTexture, int w
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+
 int main() {
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGuiIO &io = ImGui::GetIO();
-  io.ConfigWindowsMoveFromTitleBarOnly = true;
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    // --- Setup ImGui/GLFW/GLAD ---
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigWindowsMoveFromTitleBarOnly = true;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);
+    ImGui_ImplOpenGL3_Init();
 
-  ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);
-  ImGui_ImplOpenGL3_Init();
+    // --- Load shaders ---
+    Shader basicShader   ("shaders/basic.vert",  "shaders/basic.frag");
+    Shader screenShader  ("shaders/screen.vert", "shaders/screen.frag");
+    Shader flatShader    ("shaders/tex.vert",    "shaders/tex_flat.frag");
+    Shader defaultShader ("shaders/default.vert","shaders/default.frag");
 
-  Shader basicShader("shaders/basic.vert", "shaders/basic.frag");
-  Shader flatShader("shaders/tex.vert", "shaders/tex_flat.frag");
-  Shader defaultShader("shaders/default.vert", "shaders/default.frag");
-  Shader grayShader("shaders/gray.vert", "shaders/gray.frag");
+    Shader grayShader    ("shaders/screen.vert",   "shaders/gray.frag");
+    Shader invertShader ("shaders/screen.vert", "shaders/invert.frag");
 
-  std::vector<Shader *> shaders = {&flatShader, &defaultShader, &grayShader};
+    std::vector<Shader*> postShaders = {&grayShader, &invertShader};
 
-  objl::Loader loader;
-  loader.LoadFile("resources/ball.obj");
-  DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
+    // --- Load models ---
+    objl::Loader loader; loader.LoadFile("resources/ball.obj");
+    DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
+    std::vector<DrawableModel*> models = {
+        new DrawableModel(GL_STATIC_DRAW, "resources/house/house.obj", "resources/house/textures/"),
+        new DrawableModel(GL_STATIC_DRAW, "resources/tea/tea.obj",   "resources/tea/textures/"),
+        new DrawableModel(GL_STATIC_DRAW, "resources/kind/kind.obj", "resources/kind/textures/"),
+        new DrawableModel(GL_STATIC_DRAW, "resources/oshi/oshi.obj", "resources/oshi/textures/"),
+        new DrawableModel(GL_STATIC_DRAW, "resources/cubt/cubt.obj", "resources/cubt/textures/"),
+        new DrawableModel(GL_STATIC_DRAW, "resources/plane/plane.obj","resources/plane/textures/")
+    };
 
-  DrawableModel house(GL_STATIC_DRAW, "resources/house/house.obj",
-                      "resources/house/textures/");
+    glEnable(GL_DEPTH_TEST);
 
-  DrawableModel tea(GL_STATIC_DRAW, "resources/tea/tea.obj",
-                    "resources/tea/textures/");
+    // --- Create FBOs ---
+    createFramebuffer(fbo1, tex1, depthTex1, SCR_WIDTH, SCR_HEIGHT);
+    createFramebuffer(fbo2, tex2, depthTex2, SCR_WIDTH, SCR_HEIGHT);
 
-  DrawableModel kind(GL_STATIC_DRAW, "resources/kind/kind.obj",
-                     "resources/kind/textures/");
+    PropertyInspector propertyInspector;
+    ScreenQuad screenQuad; screenQuad.init();
 
-  DrawableModel oshi(GL_STATIC_DRAW, "resources/oshi/oshi.obj",
-                     "resources/oshi/textures/");
+    while (!glfwWindowShouldClose(windowObj.window)) {
+        // ——— ImGui + cámara + clear inicial ———
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        processInput(windowObj.window);
+        propertyInspector.render(windowObj, camera, models);
+        camera.Update(frameCounter.deltaTime);
+        frameCounter.update(false);
+        auto color = propertyInspector.background_color;
+        glClearColor(color[0], color[1], color[2], 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  DrawableModel cube(GL_STATIC_DRAW, "resources/cubt/cubt.obj",
-                     "resources/cubt/textures/");
+        // ——— Preparar matrices ———
+        glm::mat4 model = glm::mat4(1.0f);
+        // ... tu código de translate/rotate/scale ...
+        glm::mat4 view       = camera.GetViewMatrix(!fpsMode);
+        glm::mat4 projection = glm::perspective(
+            glm::radians(camera.Zoom),
+            float(SCR_WIDTH) / float(SCR_HEIGHT),
+            0.1f, 1000.0f
+        );
 
-  DrawableModel plane(GL_STATIC_DRAW, "resources/plane/plane.obj",
-                      "resources/plane/textures/");
+        // 1) Render 3D scene → FBO1
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo1);
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  std::vector<DrawableModel *> models = {&kind, &oshi, &house,
-                                         &tea,  &cube, &plane};
+        defaultShader.use();
+        defaultShader.setFloat("time", glfwGetTime());
+        defaultShader.setMat4("model",      model);
+        defaultShader.setMat4("view",       view);
+        defaultShader.setMat4("projection", projection);
+        defaultShader.setVec3("camPos", fpsMode ? camera.Position : camera.OrbitPosition);
+        models[propertyInspector.m_current]->Draw();
 
-  glEnable(GL_DEPTH_TEST);
+        // 2) Post‑procesado ping‑pong (solo texturas)
+        GLuint readTex  = tex1;
+        GLuint writeFBO = fbo2;
+        glDisable(GL_DEPTH_TEST);
+        for (int idx : propertyInspector.selected_shaders) {
+            Shader* post = postShaders[idx];
+            glBindFramebuffer(GL_FRAMEBUFFER, writeFBO);
 
-  createFramebuffer(fbo1, tex1, depthTex1, windowObj.SCR_WIDTH, windowObj.SCR_HEIGHT);
-  createFramebuffer(fbo2, tex2, depthTex2, windowObj.SCR_WIDTH, windowObj.SCR_HEIGHT);
+            GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+            glDrawBuffers(1, drawBuffers);
 
-  PropertyInspector propertyInspector;
+            glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+            glClear(GL_COLOR_BUFFER_BIT);
 
-  ScreenQuad screenQuad;
-  screenQuad.init();
+            glDisable(GL_DEPTH_TEST);
+            post->use();
+            post->setInt("ourTexture", 0);
+            post->setFloat("time", glfwGetTime());
 
-  while (!glfwWindowShouldClose(windowObj.window)) {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, readTex);
+            screenQuad.draw();
 
-    processInput(windowObj.window);
+            // swap
+            readTex   = (readTex   == tex1 ? tex2 : tex1);
+            writeFBO  = (writeFBO  == fbo2 ? fbo1 : fbo2);
+        }
+        glEnable(GL_DEPTH_TEST);
 
-    propertyInspector.render(windowObj, camera, models);
-
-    camera.Update(frameCounter.deltaTime);
-
-    frameCounter.update(false);
-
-    auto color = propertyInspector.background_color;
-    glClearColor(color[0], color[1], color[2], 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    reticleSize = glm::mix(reticleSize, reticleSizeTarget, 0.1f);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    auto position = propertyInspector.position;
-    model =
-        glm::translate(model, glm::vec3(position[0], position[1], position[2]));
-    auto rotation = propertyInspector.rotation;
-    model = glm::rotate(model, glm::radians(rotation[0]),
-                        glm::vec3(1.0f, 0.0f, 0.0f));
-    if (propertyInspector.turntable)
-      rotation[1] += frameCounter.deltaTime * 10.0f;
-    rotation[1] = fmodf(rotation[1], 360.0f);
-    model = glm::rotate(model, glm::radians(rotation[1]),
-                        glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(rotation[2]),
-                        glm::vec3(0.0f, 0.0f, 1.0f));
-    auto scale = propertyInspector.scale;
-    model = glm::scale(model, glm::vec3(scale[0], scale[1], scale[2]));
-
-    glm::mat4 projection = glm::perspective(
-        glm::radians(camera.Zoom), windowObj.getAspectRatio(), 0.1f, 1000.0f);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Use first shader
-    Shader* firstShader = shaders[0];
-    firstShader->use();
-    firstShader->setFloat("time", glfwGetTime());
-    firstShader->setMat4("model", model);
-    firstShader->setMat4("view", camera.GetViewMatrix(!fpsMode));
-    firstShader->setMat4("projection", projection);
-    const glm::vec3 camPos = fpsMode ? camera.Position : camera.OrbitPosition;
-    firstShader->setVec3("camPos", camPos);
-
-    models[propertyInspector.m_current]->Draw();
-
-    GLuint currentReadFBO = fbo1;
-    GLuint currentReadTex = tex1;
-    GLuint currentDepthTex = depthTex1;
-    GLuint currentWriteFBO = fbo2;
-    GLuint currentWriteTex = tex2;
-    GLuint currentWriteDepthTex = depthTex2;
-
-    for (size_t i = 0; i < propertyInspector.selected_shaders.size(); ++i) {
-        glBindFramebuffer(GL_FRAMEBUFFER, currentWriteFBO);
+        // 3) Mostrar resultado final del postprocesado
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        Shader* postShader = shaders[propertyInspector.selected_shaders[i]];
-        postShader->use();
-        postShader->setInt("ourTexture", 0);
-        postShader->setFloat("time", glfwGetTime());
-
+        screenShader.use(); // ← este shader simplemente muestra la textura
+        screenShader.setInt("ourTexture", 0);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, currentReadTex);
+        glBindTexture(GL_TEXTURE_2D, readTex);
+        screenQuad.draw(); // ← dibuja quad a pantalla completa con la textura final
 
-        screenQuad.draw();
+        // 4) Overlay: reticle
+        /*
+        basicShader.use();
+        basicShader.setMat4("view",       view);
+        basicShader.setMat4("projection", projection);
+        glm::mat4 retM = glm::translate(glm::mat4(1.0f), camera.TargetSmooth);
+        float factor = propertyInspector.hideReticle ? 0.0f : reticleSize;
+        retM = glm::scale(retM, glm::vec3(factor));
+        basicShader.setVec4("color", 1, 0, 0, 1);
+        basicShader.setMat4("model", retM);
+        ball.Draw();
+        */
 
-        // Ping-pong buffers
-        std::swap(currentReadFBO, currentWriteFBO);
-        std::swap(currentReadTex, currentWriteTex);
-        std::swap(currentDepthTex, currentWriteDepthTex);
+        // ——— ImGui render & swap ———
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(windowObj.window);
+        glfwPollEvents();
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    Shader* finalShader = shaders[1];
-    if (!propertyInspector.selected_shaders.empty()) {
-        finalShader = shaders[propertyInspector.selected_shaders.back()];
-    }
-
-    finalShader->use();
-    finalShader->setInt("ourTexture", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, currentReadTex);
-    screenQuad.draw();
-
-    basicShader.use();
-    basicShader.setMat4("view", camera.GetViewMatrix(!fpsMode));
-    basicShader.setMat4("projection", projection);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, camera.TargetSmooth);
-
-    float factor = propertyInspector.hideReticle ? 0 : 1;
-    model = glm::scale(model, glm::vec3(reticleSize * factor));
-    basicShader.setVec4("color", 1, 0, 0, 1.0f);
-    basicShader.setMat4("model", model);
-    ball.Draw();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    glfwSwapBuffers(windowObj.window);
-    glfwPollEvents();
-  }
-
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-
-  glfwTerminate();
-  return 0;
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    glfwTerminate();
+    return 0;
 }
 
 bool firstMouse = true;
