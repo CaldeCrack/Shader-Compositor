@@ -113,8 +113,10 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }
     if (ImGui::CollapsingHeader("Shader Pipeline", ImGuiTreeNodeFlags_DefaultOpen)) {
-		static const char* shader_names[] = {"Gray", "Invert"};
-		static bool selected[2] = {false};
+		static const char* shader_names[] = {"Gray", "Invert", "CRT", "Fish eye",
+                                             "Night vision", "Pixelation", "Sepia", "Vignette",
+                                             "Thermal", "Glitch"};
+		static bool selected[10] = {false};
 
 		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
 			bool was_selected = selected[i];

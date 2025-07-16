@@ -111,7 +111,6 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);
     ImGui_ImplOpenGL3_Init();
 
-    // --- Load shaders ---
     Shader basicShader   ("shaders/basic.vert",  "shaders/basic.frag");
     Shader screenShader  ("shaders/screen.vert", "shaders/screen.frag");
     Shader flatShader    ("shaders/tex.vert",    "shaders/tex_flat.frag");
@@ -119,10 +118,19 @@ int main() {
 
     Shader grayShader    ("shaders/screen.vert",   "shaders/gray.frag");
     Shader invertShader ("shaders/screen.vert", "shaders/invert.frag");
+    Shader crtShader("shaders/screen.vert","shaders/crt.frag");
+    Shader fishEyeShader("shaders/screen.vert","shaders/fisheye.frag");
+    Shader nightVisionShader("shaders/screen.vert","shaders/nightvision.frag");
+    Shader pixelationShader("shaders/screen.vert","shaders/pixelation.frag");
+    Shader sepiaShader("shaders/screen.vert","shaders/sepia.frag");
+    Shader vignetteShader("shaders/screen.vert","shaders/vignette.frag");
+    Shader thermalShader("shaders/screen.vert", "shaders/thermal.frag");
+    Shader glitchShader("shaders/screen.vert", "shaders/glitch.frag");
 
-    std::vector<Shader*> postShaders = {&grayShader, &invertShader};
+    std::vector<Shader*> postShaders = {&grayShader, &invertShader, &crtShader, &fishEyeShader,
+                                        &nightVisionShader, &pixelationShader, &sepiaShader, &vignetteShader,
+                                        &thermalShader, &glitchShader};
 
-    // --- Load models ---
     objl::Loader loader; loader.LoadFile("resources/ball.obj");
     DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
     std::vector<DrawableModel*> models = {
@@ -136,7 +144,6 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    // --- Create FBOs ---
     createFramebuffer(fbo1, tex1, depthTex1, SCR_WIDTH, SCR_HEIGHT);
     createFramebuffer(fbo2, tex2, depthTex2, SCR_WIDTH, SCR_HEIGHT);
 
@@ -144,7 +151,6 @@ int main() {
     ScreenQuad screenQuad; screenQuad.init();
 
     while (!glfwWindowShouldClose(windowObj.window)) {
-        // ——— ImGui + cámara + clear inicial ———
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -156,9 +162,7 @@ int main() {
         glClearColor(color[0], color[1], color[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // ——— Preparar matrices ———
         glm::mat4 model = glm::mat4(1.0f);
-        // ... tu código de translate/rotate/scale ...
         glm::mat4 view       = camera.GetViewMatrix(!fpsMode);
         glm::mat4 projection = glm::perspective(
             glm::radians(camera.Zoom),
@@ -166,7 +170,6 @@ int main() {
             0.1f, 1000.0f
         );
 
-        // 1) Render 3D scene → FBO1
         glBindFramebuffer(GL_FRAMEBUFFER, fbo1);
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -179,7 +182,6 @@ int main() {
         defaultShader.setVec3("camPos", fpsMode ? camera.Position : camera.OrbitPosition);
         models[propertyInspector.m_current]->Draw();
 
-        // 2) Post‑procesado ping‑pong (solo texturas)
         GLuint readTex  = tex1;
         GLuint writeFBO = fbo2;
         glDisable(GL_DEPTH_TEST);
@@ -197,27 +199,26 @@ int main() {
             post->use();
             post->setInt("ourTexture", 0);
             post->setFloat("time", glfwGetTime());
+            post->setVec2("resolution", SCR_WIDTH, SCR_HEIGHT);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, readTex);
             screenQuad.draw();
 
-            // swap
             readTex   = (readTex   == tex1 ? tex2 : tex1);
             writeFBO  = (writeFBO  == fbo2 ? fbo1 : fbo2);
         }
         glEnable(GL_DEPTH_TEST);
 
-        // 3) Mostrar resultado final del postprocesado
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        screenShader.use(); // ← este shader simplemente muestra la textura
+        screenShader.use(); 
         screenShader.setInt("ourTexture", 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, readTex);
-        screenQuad.draw(); // ← dibuja quad a pantalla completa con la textura final
+        screenQuad.draw(); 
 
         // 4) Overlay: reticle
         /*
