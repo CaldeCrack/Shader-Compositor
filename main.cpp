@@ -26,10 +26,6 @@ Camera camera;
 FrameCounter frameCounter;
 bool fpsMode = false;
 
-const float reticleSizeMax = 0.01f;
-float reticleSizeTarget = reticleSizeMax;
-float reticleSize;
-
 GLuint fbo1, fbo2;
 GLuint tex1, tex2;
 GLuint depthTex1, depthTex2;
@@ -111,13 +107,13 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);
     ImGui_ImplOpenGL3_Init();
 
-    Shader basicShader   ("shaders/basic.vert",  "shaders/basic.frag");
-    Shader screenShader  ("shaders/screen.vert", "shaders/screen.frag");
-    Shader flatShader    ("shaders/tex.vert",    "shaders/tex_flat.frag");
-    Shader defaultShader ("shaders/default.vert","shaders/default.frag");
+    Shader basicShader("shaders/basic.vert",  "shaders/basic.frag");
+    Shader screenShader("shaders/screen.vert", "shaders/screen.frag");
+    Shader flatShader("shaders/tex.vert",    "shaders/tex_flat.frag");
+    Shader defaultShader("shaders/default.vert","shaders/default.frag");
 
-    Shader grayShader    ("shaders/screen.vert",   "shaders/gray.frag");
-    Shader invertShader ("shaders/screen.vert", "shaders/invert.frag");
+    Shader grayShader("shaders/screen.vert",   "shaders/gray.frag");
+    Shader invertShader("shaders/screen.vert", "shaders/invert.frag");
     Shader crtShader("shaders/screen.vert","shaders/crt.frag");
     Shader fishEyeShader("shaders/screen.vert","shaders/fisheye.frag");
     Shader nightVisionShader("shaders/screen.vert","shaders/nightvision.frag");
@@ -131,8 +127,6 @@ int main() {
                                         &nightVisionShader, &pixelationShader, &sepiaShader, &vignetteShader,
                                         &thermalShader, &glitchShader};
 
-    objl::Loader loader; loader.LoadFile("resources/ball.obj");
-    DrawableMesh ball(GL_STATIC_DRAW, loader.LoadedMeshes[0]);
     std::vector<DrawableModel*> models = {
         new DrawableModel(GL_STATIC_DRAW, "resources/house/house.obj", "resources/house/textures/"),
         new DrawableModel(GL_STATIC_DRAW, "resources/tea/tea.obj",   "resources/tea/textures/"),
@@ -163,7 +157,22 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view       = camera.GetViewMatrix(!fpsMode);
+		auto position = propertyInspector.position;
+		model = glm::translate(model, glm::vec3(position[0], position[1], position[2]));
+		auto rotation = propertyInspector.rotation;
+		model = glm::rotate(model, glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
+
+		if (propertyInspector.turntable)
+			rotation[1] += frameCounter.deltaTime * 10.0f;
+
+		rotation[1] = fmodf(rotation[1], 360.0f);
+		model = glm::rotate(model, glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		auto scale = propertyInspector.scale;
+		model = glm::scale(model, glm::vec3(scale[0], scale[1], scale[2]));
+
+		glm::mat4 view       = camera.GetViewMatrix(!fpsMode);
         glm::mat4 projection = glm::perspective(
             glm::radians(camera.Zoom),
             float(SCR_WIDTH) / float(SCR_HEIGHT),
@@ -220,19 +229,6 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, readTex);
         screenQuad.draw(); 
 
-        // 4) Overlay: reticle
-        /*
-        basicShader.use();
-        basicShader.setMat4("view",       view);
-        basicShader.setMat4("projection", projection);
-        glm::mat4 retM = glm::translate(glm::mat4(1.0f), camera.TargetSmooth);
-        float factor = propertyInspector.hideReticle ? 0.0f : reticleSize;
-        retM = glm::scale(retM, glm::vec3(factor));
-        basicShader.setVec4("color", 1, 0, 0, 1);
-        basicShader.setMat4("model", retM);
-        ball.Draw();
-        */
-
         // ——— ImGui render & swap ———
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -250,12 +246,10 @@ int main() {
 bool firstMouse = true;
 
 void focus(GLFWwindow *window) {
-  reticleSizeTarget = 0;
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void unfocus(GLFWwindow *window) {
-  reticleSizeTarget = reticleSizeMax;
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   firstMouse = true;
 }

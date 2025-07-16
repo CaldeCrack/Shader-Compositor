@@ -19,8 +19,6 @@ struct PropertyInspector {
 
     float background_color[3] = {0.2f, 0.3f, 0.3f};
 
-    bool wireframe = false;
-    bool hideReticle = true;
     bool turntable = false;
 
     int m_current = 0;

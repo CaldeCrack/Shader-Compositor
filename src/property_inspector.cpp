@@ -27,8 +27,6 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
     ImGui::Text("(Orbit / First Person)");
     ImGui::Separator();
 
-    ImGui::Checkbox("Hide Reticle", &hideReticle);
-
     ImGui::SliderFloat("FOV", &camera.Zoom, 5.0f, 90.0f);
 
     auto &model = *models[m_current];
@@ -103,12 +101,7 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 18), 0, ImVec2(1.0f, 0));
     ImGui::Begin("Visual Options", nullptr, flags);
-    if (ImGui::Checkbox("Wireframe", &wireframe))
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-    }
-    if (ImGui::Combo("Model", &m_current,
-                     "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
+    if (ImGui::Combo("Model", &m_current, "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }
