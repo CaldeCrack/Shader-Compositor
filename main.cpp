@@ -16,12 +16,10 @@
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-void toggleCursor(GLFWwindow *window, int key, int scancode, int action,
-                  int mods);
+void toggleCursor(GLFWwindow *window, int key, int scancode, int action, int mods);
 void processInput(GLFWwindow *window);
 
-Window windowObj(1024, 768, framebuffer_size_callback, mouse_callback,
-                 scroll_callback, toggleCursor);
+Window windowObj(1024, 768, framebuffer_size_callback, mouse_callback, scroll_callback, toggleCursor);
 Camera camera;
 FrameCounter frameCounter;
 bool fpsMode = false;
@@ -107,10 +105,8 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(windowObj.window, true);
     ImGui_ImplOpenGL3_Init();
 
-    Shader basicShader("shaders/basic.vert",  "shaders/basic.frag");
-    Shader screenShader("shaders/screen.vert", "shaders/screen.frag");
-    Shader flatShader("shaders/tex.vert",    "shaders/tex_flat.frag");
     Shader defaultShader("shaders/default.vert","shaders/default.frag");
+    Shader screenShader("shaders/screen.vert", "shaders/screen.frag");
 
     Shader grayShader("shaders/screen.vert",   "shaders/gray.frag");
     Shader invertShader("shaders/screen.vert", "shaders/invert.frag");
@@ -122,10 +118,17 @@ int main() {
     Shader vignetteShader("shaders/screen.vert","shaders/vignette.frag");
     Shader thermalShader("shaders/screen.vert", "shaders/thermal.frag");
     Shader glitchShader("shaders/screen.vert", "shaders/glitch.frag");
+    Shader blurShader("shaders/screen.vert", "shaders/blur.frag");
+    Shader bloomShader("shaders/screen.vert", "shaders/bloom.frag");
+    Shader sharpShader("shaders/screen.vert", "shaders/sharp.frag");
+    Shader AOShader("shaders/screen.vert", "shaders/AO.frag");
+    Shader filmGrainShader("shaders/screen.vert", "shaders/filmGrain.frag");
+    Shader DoFShader("shaders/screen.vert", "shaders/DoF.frag");
 
     std::vector<Shader*> postShaders = {&grayShader, &invertShader, &crtShader, &fishEyeShader,
                                         &nightVisionShader, &pixelationShader, &sepiaShader, &vignetteShader,
-                                        &thermalShader, &glitchShader};
+                                        &thermalShader, &glitchShader, &blurShader, &bloomShader,
+										&sharpShader, &AOShader, &filmGrainShader, &DoFShader};
 
     std::vector<DrawableModel*> models = {
         new DrawableModel(GL_STATIC_DRAW, "resources/house/house.obj", "resources/house/textures/"),
@@ -192,6 +195,7 @@ int main() {
         models[propertyInspector.m_current]->Draw();
 
         GLuint readTex  = tex1;
+        GLuint depthTex  = depthTex1;
         GLuint writeFBO = fbo2;
         glDisable(GL_DEPTH_TEST);
         for (int idx : propertyInspector.selected_shaders) {
@@ -207,15 +211,19 @@ int main() {
             glDisable(GL_DEPTH_TEST);
             post->use();
             post->setInt("ourTexture", 0);
+			post->setInt("depthTexture", 1);
             post->setFloat("time", glfwGetTime());
             post->setVec2("resolution", SCR_WIDTH, SCR_HEIGHT);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, readTex);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, depthTex);
             screenQuad.draw();
 
-            readTex   = (readTex   == tex1 ? tex2 : tex1);
-            writeFBO  = (writeFBO  == fbo2 ? fbo1 : fbo2);
+            readTex  = (readTex  == tex1 ? tex2 : tex1);
+            depthTex  = (depthTex  == depthTex1 ? depthTex2 : depthTex1);
+            writeFBO = (writeFBO == fbo2 ? fbo1 : fbo2);
         }
         glEnable(GL_DEPTH_TEST);
 

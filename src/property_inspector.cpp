@@ -108,8 +108,9 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
     if (ImGui::CollapsingHeader("Shader Pipeline", ImGuiTreeNodeFlags_DefaultOpen)) {
 		static const char* shader_names[] = {"Gray", "Invert", "CRT", "Fish eye",
                                              "Night vision", "Pixelation", "Sepia", "Vignette",
-                                             "Thermal", "Glitch"};
-		static bool selected[10] = {false};
+                                             "Thermal", "Glitch", "Blur", "Bloom", "Sharpening",
+											 "Ambient Occlusion", "Film Grain", "Depth of Field"};
+		static bool selected[16] = {false};
 
 		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
 			bool was_selected = selected[i];
