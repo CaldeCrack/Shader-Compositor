@@ -7,22 +7,20 @@ in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D velocityTexture;
-uniform vec2 resolution;
 uniform float time;
 
+const float noiseStrength = 0.15;
+
 float rand(vec2 co) {
-    return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
+    return fract(sin(dot(co.xy, vec2(12.9898, 78.233)) + time * 60.0) * 43758.5453);
 }
 
 void main() {
-    vec4 color = texture(ourTexture, TexCoord);
+    vec3 sceneColor = texture(ourTexture, TexCoord).rgb;
 
-    // Grain: random noise based on position and time
-    float grainAmount = 0.05;
-    float noise = rand(TexCoord * resolution + time);
-    noise = noise * 2.0 - 1.0;
+    float noise = rand(TexCoord * vec2(1920.0, 1080.0)); // scale for resolution
+    vec3 noisyColor = mix(sceneColor, vec3(noise), noiseStrength);
 
-    color.rgb += noise * grainAmount;
-    FragColor = vec4(clamp(color.rgb, 0.0, 1.0), color.a);
-	FragVelocity = texture(velocityTexture, TexCoord).xy;
+    FragColor = vec4(noisyColor, 1.0);
+    FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

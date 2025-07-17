@@ -101,6 +101,7 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 18), 0, ImVec2(1.0f, 0));
     ImGui::Begin("Visual Options", nullptr, flags);
+	ImGui::PushItemWidth(150);
     if (ImGui::Combo("Model", &m_current, "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
@@ -110,8 +111,11 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
                                              "Night vision", "Pixelation", "Sepia", "Vignette",
                                              "Thermal", "Glitch", "Blur", "Bloom", "Sharpening",
 											 "Ambient Occlusion", "Film Grain", "Depth of Field",
-											 "Motion Blur", "Dotted"};
-		static bool selected[18] = {false};
+											 "Motion Blur", "Halftone", "Wave", "'Sort'", "Dithering",
+											 "Fog", "ASCII", "Color Quantization", "Sliding Noise",
+											 "Gameboy", "Distortion", "Double Vision", "Mirrored",
+											 "9 screens", "Pinch", "Edge Detection"};
+		static bool selected[32] = {false};
 
 		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
 			bool was_selected = selected[i];
@@ -136,5 +140,6 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 			}
 		}
 	}
+	ImGui::PopItemWidth();
     ImGui::End();
 }

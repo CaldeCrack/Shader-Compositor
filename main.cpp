@@ -137,13 +137,31 @@ int main() {
     Shader filmGrainShader("shaders/screen.vert", "shaders/filmGrain.frag");
     Shader DoFShader("shaders/screen.vert", "shaders/DoF.frag");
     Shader motionBlurShader("shaders/screen.vert", "shaders/motionBlur.frag");
-    Shader dottedShader("shaders/screen.vert", "shaders/dotted.frag");
+    Shader halftoneShader("shaders/screen.vert", "shaders/halftone.frag");
+    Shader waveShader("shaders/screen.vert", "shaders/wave.frag");
+    Shader sortShader("shaders/screen.vert", "shaders/sort.frag");
+    Shader ditheringShader("shaders/screen.vert", "shaders/dithering.frag");
+    Shader fogShader("shaders/screen.vert", "shaders/fog.frag");
+    Shader asciiShader("shaders/screen.vert", "shaders/ascii.frag");
+    Shader colorQShader("shaders/screen.vert", "shaders/colorQuantization.frag");
+    Shader slidingNoiseShader("shaders/screen.vert", "shaders/slidingNoise.frag");
+    Shader gameboyShader("shaders/screen.vert", "shaders/gameboy.frag");
+    Shader distortionShader("shaders/screen.vert", "shaders/distortion.frag");
+    Shader doubleVisionShader("shaders/screen.vert", "shaders/double.frag");
+    Shader mirroredShader("shaders/screen.vert", "shaders/mirror.frag");
+    Shader nineShader("shaders/screen.vert", "shaders/nine.frag");
+    Shader pinchShader("shaders/screen.vert", "shaders/pinch.frag");
+    Shader edgeShader("shaders/screen.vert", "shaders/edge.frag");
 
     std::vector<Shader*> postShaders = {&grayShader, &invertShader, &crtShader, &fishEyeShader,
                                         &nightVisionShader, &pixelationShader, &sepiaShader, &vignetteShader,
                                         &thermalShader, &glitchShader, &blurShader, &bloomShader,
 										&sharpShader, &AOShader, &filmGrainShader, &DoFShader,
-										&motionBlurShader, &dottedShader};
+										&motionBlurShader, &halftoneShader, &waveShader, &sortShader,
+										&ditheringShader, &fogShader, &asciiShader, &colorQShader,
+										&slidingNoiseShader, &gameboyShader, &distortionShader,
+										&doubleVisionShader, &mirroredShader, &nineShader, &pinchShader,
+										&edgeShader};
 
     std::vector<DrawableModel*> models = {
         new DrawableModel(GL_STATIC_DRAW, "resources/house/house.obj", "resources/house/textures/"),
@@ -185,7 +203,7 @@ int main() {
 		model = glm::rotate(model, glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
 
 		if (propertyInspector.turntable)
-			rotation[1] += frameCounter.deltaTime * 10.0f;
+			rotation[1] += frameCounter.deltaTime * 20.0f;
 
 		rotation[1] = fmodf(rotation[1], 360.0f);
 		model = glm::rotate(model, glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
