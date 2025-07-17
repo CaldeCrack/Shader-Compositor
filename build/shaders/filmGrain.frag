@@ -1,9 +1,12 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
+uniform sampler2D velocityTexture;
 uniform vec2 resolution;
 uniform float time;
 
@@ -21,4 +24,5 @@ void main() {
 
     color.rgb += noise * grainAmount;
     FragColor = vec4(clamp(color.rgb, 0.0, 1.0), color.a);
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

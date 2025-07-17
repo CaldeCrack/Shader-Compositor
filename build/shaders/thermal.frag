@@ -1,9 +1,12 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
+uniform sampler2D velocityTexture;
 
 vec3 thermalPalette(float t) {
     vec3 c;
@@ -24,4 +27,5 @@ void main()
     float luminance = dot(texColor.rgb, vec3(0.2126, 0.7152, 0.0722));
     vec3 color = thermalPalette(luminance);
     FragColor = vec4(color, 1.0);
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

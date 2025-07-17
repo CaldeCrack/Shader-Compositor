@@ -109,8 +109,9 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 		static const char* shader_names[] = {"Gray", "Invert", "CRT", "Fish eye",
                                              "Night vision", "Pixelation", "Sepia", "Vignette",
                                              "Thermal", "Glitch", "Blur", "Bloom", "Sharpening",
-											 "Ambient Occlusion", "Film Grain", "Depth of Field"};
-		static bool selected[16] = {false};
+											 "Ambient Occlusion", "Film Grain", "Depth of Field",
+											 "Motion Blur", "Dotted"};
+		static bool selected[18] = {false};
 
 		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
 			bool was_selected = selected[i];

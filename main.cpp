@@ -27,6 +27,7 @@ bool fpsMode = false;
 GLuint fbo1, fbo2;
 GLuint tex1, tex2;
 GLuint depthTex1, depthTex2;
+GLuint velTex1, velTex2;
 
 int SCR_WIDTH = 1024, SCR_HEIGHT = 768;
 
@@ -61,19 +62,24 @@ struct ScreenQuad {
     }
 };
 
-void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& depthTexture, int width, int height) {
+void blitDepthBuffer(GLuint srcFBO, GLuint dstFBO, int width, int height) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, srcFBO);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dstFBO);
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+}
+
+void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& depthTexture, GLuint& velTexture,
+					   int width, int height) {
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     // color texture
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height,
-                 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                           GL_TEXTURE_2D, texture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
     // depth texture
     glGenTextures(1, &depthTexture);
@@ -82,18 +88,24 @@ void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& depthTexture, int w
                  0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                           GL_TEXTURE_2D, depthTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
-    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-    glDrawBuffers(1, drawBuffers);
+	// velocity texture
+	glGenTextures(1, &velTexture);
+	glBindTexture(GL_TEXTURE_2D, velTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, width, height, 0, GL_RG, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, velTexture, 0);
+
+    GLenum drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+	glDrawBuffers(2, drawBuffers);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cerr << "Framebuffer not complete!" << std::endl;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-
 
 int main() {
     // --- Setup ImGui/GLFW/GLAD ---
@@ -124,11 +136,14 @@ int main() {
     Shader AOShader("shaders/screen.vert", "shaders/AO.frag");
     Shader filmGrainShader("shaders/screen.vert", "shaders/filmGrain.frag");
     Shader DoFShader("shaders/screen.vert", "shaders/DoF.frag");
+    Shader motionBlurShader("shaders/screen.vert", "shaders/motionBlur.frag");
+    Shader dottedShader("shaders/screen.vert", "shaders/dotted.frag");
 
     std::vector<Shader*> postShaders = {&grayShader, &invertShader, &crtShader, &fishEyeShader,
                                         &nightVisionShader, &pixelationShader, &sepiaShader, &vignetteShader,
                                         &thermalShader, &glitchShader, &blurShader, &bloomShader,
-										&sharpShader, &AOShader, &filmGrainShader, &DoFShader};
+										&sharpShader, &AOShader, &filmGrainShader, &DoFShader,
+										&motionBlurShader, &dottedShader};
 
     std::vector<DrawableModel*> models = {
         new DrawableModel(GL_STATIC_DRAW, "resources/house/house.obj", "resources/house/textures/"),
@@ -141,11 +156,15 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    createFramebuffer(fbo1, tex1, depthTex1, SCR_WIDTH, SCR_HEIGHT);
-    createFramebuffer(fbo2, tex2, depthTex2, SCR_WIDTH, SCR_HEIGHT);
+    createFramebuffer(fbo1, tex1, depthTex1, velTex1, SCR_WIDTH, SCR_HEIGHT);
+    createFramebuffer(fbo2, tex2, depthTex2, velTex2, SCR_WIDTH, SCR_HEIGHT);
 
     PropertyInspector propertyInspector;
     ScreenQuad screenQuad; screenQuad.init();
+
+	glm::mat4 prevModel;
+	glm::mat4 prevView;
+	glm::mat4 prevProjection;
 
     while (!glfwWindowShouldClose(windowObj.window)) {
         ImGui_ImplOpenGL3_NewFrame();
@@ -175,7 +194,7 @@ int main() {
 		auto scale = propertyInspector.scale;
 		model = glm::scale(model, glm::vec3(scale[0], scale[1], scale[2]));
 
-		glm::mat4 view       = camera.GetViewMatrix(!fpsMode);
+		glm::mat4 view = camera.GetViewMatrix(!fpsMode);
         glm::mat4 projection = glm::perspective(
             glm::radians(camera.Zoom),
             float(SCR_WIDTH) / float(SCR_HEIGHT),
@@ -188,42 +207,48 @@ int main() {
 
         defaultShader.use();
         defaultShader.setFloat("time", glfwGetTime());
-        defaultShader.setMat4("model",      model);
-        defaultShader.setMat4("view",       view);
+        defaultShader.setMat4("model", model);
+        defaultShader.setMat4("view", view);
         defaultShader.setMat4("projection", projection);
+		defaultShader.setMat4("prevModel", prevModel);
+		defaultShader.setMat4("prevView", prevView);
+		defaultShader.setMat4("prevProjection", prevProjection);
         defaultShader.setVec3("camPos", fpsMode ? camera.Position : camera.OrbitPosition);
         models[propertyInspector.m_current]->Draw();
 
         GLuint readTex  = tex1;
-        GLuint depthTex  = depthTex1;
-        GLuint writeFBO = fbo2;
+		GLuint currentReadFBO = fbo1;
+		GLuint currentWriteFBO = fbo2;
+
         glDisable(GL_DEPTH_TEST);
         for (int idx : propertyInspector.selected_shaders) {
             Shader* post = postShaders[idx];
-            glBindFramebuffer(GL_FRAMEBUFFER, writeFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, currentWriteFBO);
+			blitDepthBuffer(currentReadFBO, currentWriteFBO, SCR_WIDTH, SCR_HEIGHT);
 
-            GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-            glDrawBuffers(1, drawBuffers);
+            GLenum drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+			glDrawBuffers(2, drawBuffers);
 
             glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-            glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-            glDisable(GL_DEPTH_TEST);
             post->use();
             post->setInt("ourTexture", 0);
 			post->setInt("depthTexture", 1);
+			post->setInt("velocityTexture", 2);
             post->setFloat("time", glfwGetTime());
             post->setVec2("resolution", SCR_WIDTH, SCR_HEIGHT);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, readTex);
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, depthTex);
+			glBindTexture(GL_TEXTURE_2D, (currentReadFBO == fbo1) ? depthTex1 : depthTex2);
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, (currentReadFBO == fbo1) ? velTex1 : velTex2);
             screenQuad.draw();
 
             readTex  = (readTex  == tex1 ? tex2 : tex1);
-            depthTex  = (depthTex  == depthTex1 ? depthTex2 : depthTex1);
-            writeFBO = (writeFBO == fbo2 ? fbo1 : fbo2);
+            std::swap(currentReadFBO, currentWriteFBO);
         }
         glEnable(GL_DEPTH_TEST);
 
@@ -241,6 +266,9 @@ int main() {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(windowObj.window);
+		prevModel = model;
+		prevView = view;
+		prevProjection = projection;
         glfwPollEvents();
     }
 

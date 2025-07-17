@@ -1,9 +1,12 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
+uniform sampler2D velocityTexture;
 uniform float time;
 
 float rand(vec2 co) {
@@ -30,4 +33,5 @@ void main()
     color.rgb *= 1.0 - 0.3 * line;
 
     FragColor = color;
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

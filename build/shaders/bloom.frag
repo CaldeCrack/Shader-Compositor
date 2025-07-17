@@ -1,9 +1,12 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
+uniform sampler2D velocityTexture;
 uniform vec2 resolution;
 
 float threshold = 0.7;
@@ -36,4 +39,5 @@ void main()
     // Blend bloom with original
     vec4 bloomColor = bright;
     FragColor = original + bloomColor;
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

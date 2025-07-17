@@ -1,18 +1,20 @@
+// default.frag
 #version 330 core
 
 in vec2 TexCoord;
-in vec3 FragPos;
+in vec2 CurrNDC;
+in vec2 PrevNDC;
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 Velocity;
 
 uniform sampler2D ourTexture;
 
 void main() {
-    // Muestreo simple de la textura resultante
     vec4 texColor = texture(ourTexture, TexCoord);
     if (texColor.a < 0.1)
         discard;
 
-    // Si solo quieres mostrar la textura:
     FragColor = texColor;
+    Velocity = CurrNDC - PrevNDC;
 }

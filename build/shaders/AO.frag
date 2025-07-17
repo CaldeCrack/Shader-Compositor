@@ -1,10 +1,13 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D depthTexture;
+uniform sampler2D velocityTexture;
 uniform vec2 resolution;
 
 const float radius = 2.0;
@@ -44,4 +47,5 @@ void main() {
     vec3 shaded = baseColor * occlusion;
 
     FragColor = vec4(shaded, 1.0);
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

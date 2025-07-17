@@ -1,10 +1,13 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D depthTexture;
+uniform sampler2D velocityTexture;
 
 uniform vec2 resolution;
 
@@ -40,4 +43,5 @@ void main() {
     }
 
     FragColor = vec4(color / total, 1.0);
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

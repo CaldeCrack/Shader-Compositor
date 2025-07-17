@@ -1,10 +1,13 @@
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec2 FragVelocity;
+
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
-uniform vec2 resolution; // pasa el tamaño de la ventana
+uniform sampler2D velocityTexture;
+uniform vec2 resolution;
 
 void main()
 {
@@ -13,4 +16,5 @@ void main()
     uv = floor(uv / pixelSize) * pixelSize;
     uv = uv / resolution;
     FragColor = texture(ourTexture, uv);
+	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }
