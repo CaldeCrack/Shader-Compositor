@@ -18,13 +18,13 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
     auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
 
     ImGui::Begin("Model Viewer", nullptr, flags);
+	ImGui::PushItemWidth(160);
 
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::Text("Frame Time: %f ms", ImGui::GetIO().DeltaTime);
     ImGui::Separator();
 
-    ImGui::Text("Press ~ to toggle camera mode");
-    ImGui::Text("(Orbit / First Person)");
+    ImGui::Text("Press | to toggle camera mode");
     ImGui::Separator();
 
     ImGui::SliderFloat("FOV", &camera.Zoom, 5.0f, 90.0f);
@@ -97,11 +97,12 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         ImGui::Checkbox("Turntable", &turntable);
     }
 
+	ImGui::PopItemWidth();
     ImGui::End();
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 18), 0, ImVec2(1.0f, 0));
     ImGui::Begin("Visual Options", nullptr, flags);
-	ImGui::PushItemWidth(150);
+	ImGui::PushItemWidth(110);
     if (ImGui::Combo("Model", &m_current, "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
