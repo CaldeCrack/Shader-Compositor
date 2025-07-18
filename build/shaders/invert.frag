@@ -7,10 +7,12 @@ in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D velocityTexture;
+uniform float time;
 
-void main() {
-	vec4 texColor = texture(ourTexture, TexCoord);
-    float gray = 0.33 * (texColor.r + texColor.g + texColor.b);
-    FragColor = vec4(gray, gray, gray, 1.0);
+void main()
+{
+    vec4 texColor = texture(ourTexture, TexCoord);
+    vec3 inverted = vec3(1.0) - texColor.rgb;
+    FragColor = vec4(inverted, texColor.a);
 	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

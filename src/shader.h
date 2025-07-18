@@ -28,6 +28,7 @@ public:
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;
     void setFloat(const std::string& name, float value) const;
+    void setVec2(const std::string& name, int v1, int v2) const;
     void setVec3(const std::string& name, glm::vec3 v) const;
     void setVec3(const std::string& name, float v1, float v2, float v3) const;
     void setVec4(const std::string& name, float v1, float v2, float v3, float v4) const;

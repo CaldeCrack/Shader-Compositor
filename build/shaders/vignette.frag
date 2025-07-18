@@ -8,9 +8,12 @@ in vec2 TexCoord;
 uniform sampler2D ourTexture;
 uniform sampler2D velocityTexture;
 
-void main() {
-	vec4 texColor = texture(ourTexture, TexCoord);
-    float gray = 0.33 * (texColor.r + texColor.g + texColor.b);
-    FragColor = vec4(gray, gray, gray, 1.0);
+void main()
+{
+    vec2 uv = TexCoord - 0.5;
+    float dist = length(uv);
+    float vignette = smoothstep(0.75, 0.35, dist);
+    vec4 color = texture(ourTexture, TexCoord);
+    FragColor = vec4(color.rgb * vignette, color.a);
 	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

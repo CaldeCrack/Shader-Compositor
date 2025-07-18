@@ -7,10 +7,14 @@ in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform sampler2D velocityTexture;
+uniform vec2 resolution;
 
-void main() {
-	vec4 texColor = texture(ourTexture, TexCoord);
-    float gray = 0.33 * (texColor.r + texColor.g + texColor.b);
-    FragColor = vec4(gray, gray, gray, 1.0);
+void main()
+{
+    float pixelSize = 5.0;
+    vec2 uv = TexCoord * resolution;
+    uv = floor(uv / pixelSize) * pixelSize;
+    uv = uv / resolution;
+    FragColor = texture(ourTexture, uv);
 	FragVelocity = texture(velocityTexture, TexCoord).xy;
 }

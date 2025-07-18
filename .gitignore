@@ -34,3 +34,4 @@
 # Unnecessary Cache
 *.cache
 
+*/CMakeCache.txt

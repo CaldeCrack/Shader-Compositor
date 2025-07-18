@@ -30,7 +30,7 @@ DrawableMesh::DrawableMesh(GLuint drawMode,
 
 	glGenBuffers(1, &EBO); // create index buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // bind index buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ind_count * sizeof(float), indices, drawMode); // send index data to buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ind_count * sizeof(unsigned int), indices, drawMode); // send index data to buffer
 
 	// this is the layout (attribute = #) in the shader
 	const unsigned int v_attribute = 0;

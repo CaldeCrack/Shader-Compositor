@@ -18,16 +18,14 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
     auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
 
     ImGui::Begin("Model Viewer", nullptr, flags);
+	ImGui::PushItemWidth(160);
 
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::Text("Frame Time: %f ms", ImGui::GetIO().DeltaTime);
     ImGui::Separator();
 
-    ImGui::Text("Press ~ to toggle camera mode");
-    ImGui::Text("(Orbit / First Person)");
+    ImGui::Text("Press | to toggle camera mode");
     ImGui::Separator();
-
-    ImGui::Checkbox("Hide Reticle", &hideReticle);
 
     ImGui::SliderFloat("FOV", &camera.Zoom, 5.0f, 90.0f);
 
@@ -99,37 +97,29 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         ImGui::Checkbox("Turntable", &turntable);
     }
 
+	ImGui::PopItemWidth();
     ImGui::End();
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 18), 0, ImVec2(1.0f, 0));
     ImGui::Begin("Visual Options", nullptr, flags);
-    if (ImGui::Checkbox("Wireframe", &wireframe))
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
-    }
-    if (ImGui::Combo("Model", &m_current,
-                     "Kind\0Oshi\0House\0Tea\0Cube\0Plane\0"))
+	ImGui::PushItemWidth(110);
+    if (ImGui::Combo("Model", &m_current, "House\0Tea\0Kind\0Oshi\0Cube\0Plane\0"))
     {
         camera.Reset(models[m_current]->avg_pos, -90, -10);
     }
     if (ImGui::CollapsingHeader("Shader Pipeline", ImGuiTreeNodeFlags_DefaultOpen)) {
-		static const char* shader_names[] = {"Flat", "Default", "Gray"};
-		static bool selected[3] = {false};
-		if (selected_shaders.empty()) {
-			selected_shaders.push_back(0);
-		}
-		if (selected_shaders.size() < 2) {
-			selected_shaders.push_back(1);
-		}
+		static const char* shader_names[] = {"Gray", "Invert", "CRT", "Fish eye",
+                                             "Night vision", "Pixelation", "Sepia", "Vignette",
+                                             "Thermal", "Glitch", "Blur", "Bloom", "Sharpening",
+											 "Ambient Occlusion", "Film Grain", "Depth of Field",
+											 "Motion Blur", "Halftone", "Wave", "'Sort'", "Dithering",
+											 "Fog", "ASCII", "Color Quantization", "Sliding Noise",
+											 "Gameboy", "Distortion", "Double Vision", "Mirrored",
+											 "9 screens", "Pinch", "Edge Detection"};
+		static bool selected[32] = {false};
 
 		for (int i = 0; i < IM_ARRAYSIZE(shader_names); ++i) {
 			bool was_selected = selected[i];
-			bool is_last_selected = (selected_shaders.size() == 1) && selected[i];
-
-			// Disable unchecking the last selected shader
-			if (is_last_selected) {
-				ImGui::BeginDisabled();
-			}
 
 			if (ImGui::Selectable(shader_names[i], selected[i])) {
 				selected[i] = !was_selected;
@@ -141,10 +131,6 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 						selected_shaders.erase(it);
 				}
 			}
-
-			if (is_last_selected) {
-				ImGui::EndDisabled();
-			}
 		}
 
 		if (!selected_shaders.empty()) {
@@ -155,5 +141,6 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
 			}
 		}
 	}
+	ImGui::PopItemWidth();
     ImGui::End();
 }
