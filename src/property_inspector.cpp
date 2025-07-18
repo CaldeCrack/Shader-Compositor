@@ -18,13 +18,10 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
     auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
 
     ImGui::Begin("Model Viewer", nullptr, flags);
-	ImGui::PushItemWidth(160);
+	ImGui::PushItemWidth(120);
 
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::Text("Frame Time: %f ms", ImGui::GetIO().DeltaTime);
-    ImGui::Separator();
-
-    ImGui::Text("Press | to toggle camera mode");
     ImGui::Separator();
 
     ImGui::SliderFloat("FOV", &camera.Zoom, 5.0f, 90.0f);
@@ -87,7 +84,7 @@ void PropertyInspector::render(Window windowObj, Camera& camera,
         ImGui::EndPopup();
     }
 
-    ImGui::ColorEdit3("Background Color", background_color);
+    ImGui::ColorEdit3("BG Color", background_color);
 
     if (ImGui::CollapsingHeader("Model Transform", ImGuiTreeNodeFlags_DefaultOpen))
     {
