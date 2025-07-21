@@ -1,3 +1,10 @@
+# Shader Compositor
+Proyecto final para el ramo de Geometría Computacional.
+
+## Preview
+<img width="1020" height="686" alt="image" src="https://github.com/user-attachments/assets/f890a7f7-ee3d-4363-8280-b3a432660234" />
+<img width="1022" height="685" alt="image" src="https://github.com/user-attachments/assets/b7ad0454-42ca-4999-a84f-7a599b6bcc3b" />
+
 # OpenGL Model Viewer
 A 3D model viewer written in C++ that renders `.obj` files using OpenGL. This was my first ever OpenGL project and is old, you should check out my more recent (and much more advanced) [Vulkan Renderer](https://github.com/AaronTian-stack/qhenki-renderer).
 
