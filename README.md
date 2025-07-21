@@ -1,5 +1,7 @@
 # Shader Compositor
-Proyecto final para el ramo de Geometría Computacional.
+Proyecto final para el ramo de Geometría Computacional desarrollado junto con [ad0Iph](https://github.com/ad0Iph).
+
+Compositor de shaders en secuencia para aplicarlos en un entorno tridimensional.
 
 ## Preview
 <img width="1020" height="686" alt="image" src="https://github.com/user-attachments/assets/f890a7f7-ee3d-4363-8280-b3a432660234" />
